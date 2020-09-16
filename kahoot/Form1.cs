@@ -23,7 +23,7 @@ namespace kahoot
 
         List<TcpClient> klient = new List<TcpClient>();
 
-        List<Klienter> allaKlienter = new List<Klienter>();
+        //List<Klienter> allaKlienter = new List<Klienter>();
         /// <summary>
         /// Porten till servern
         /// </summary>
@@ -61,12 +61,21 @@ namespace kahoot
         /// </summary>
         public async void StartaMottagning()
         {
+            klienten = null;
             try
             {
                 //klient[nuvarande] = new TcpClient();
                 //allaKlienter.Add(klient[nuvarande]);
                 klienten = await lyssanre.AcceptTcpClientAsync();
-                //allaKlienter.Add();
+                for(int i = 0; i < klient.Count; i++)
+                {
+                if(klienten == klient[i])
+                    {
+                        klient.Add(klienten);
+                    }
+
+                }
+
             }
             catch (Exception error) { lbxLista.Items.Add(error.Message + "Hejsan numme 2"); return; }
             lbxLista.Items.Add("Mottagning klar");
