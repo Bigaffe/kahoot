@@ -47,6 +47,7 @@ namespace kahoot
             }
             catch(Exception error) { lbxLista.Items.Add(error.Message + "Hejsan numme 1" );return; }
             lbxLista.Items.Add("Knapp klar");
+            btnStart.Enabled = false;
             StartaMottagning();
         }
         /// <summary>
