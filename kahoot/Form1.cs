@@ -13,6 +13,7 @@ using System.IO;
 using System.Threading;
 using System.Diagnostics;
 
+
 namespace kahoot
 {
     public partial class Form1 : Form
@@ -89,6 +90,10 @@ namespace kahoot
                 if (msg != "/CLOST CONNECTION")
                 {
                     Debug.WriteLine(((IPEndPoint)k.Client.RemoteEndPoint).Address + ":" + ((IPEndPoint)k.Client.RemoteEndPoint).Port + "> \"" + msg + "\"" + "\r\n");
+                    if(stänger == false)
+                    {
+                        lbxLista.Items.Add(((IPEndPoint)k.Client.RemoteEndPoint).Address + ":" + ((IPEndPoint)k.Client.RemoteEndPoint).Port + "> \"" + msg + "\"" + "\r\n");
+                    }
                 }
                 broadcast(((IPEndPoint)k.Client.RemoteEndPoint).Address + ":" + ((IPEndPoint)k.Client.RemoteEndPoint).Port + "> \"" + msg + "\"" + "\r\n");
                 StartaLäsning(k);
@@ -97,7 +102,7 @@ namespace kahoot
             {
                 if(stänger == false)
                 {
-                lbxLista.Items.Add(((IPEndPoint)k.Client.RemoteEndPoint).Address);
+                    lbxLista.Items.Add(((IPEndPoint)k.Client.RemoteEndPoint).Address);
                 }
                 broadcast(((IPEndPoint)k.Client.RemoteEndPoint).Address + ":" + ((IPEndPoint)k.Client.RemoteEndPoint).Port + "> " + "User disconnected");
                 klienter.Remove(k);
@@ -122,10 +127,21 @@ namespace kahoot
         }
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            stänger = true;
-            broadcast("/CLOSE CONNECTION");
-            Application.Exit();
+            if(ansluten == true)
+            {
+                ansluten = false;
+                startaSändning("/CLOSE CONNECTION");
+                klienten.Close();
+            }
+            else 
+            {
+                stänger = true;
+                broadcast("/CLOSE CONNECTION");
+                Application.Exit();
+            }
+            
         }
+        //---------------------------------------------------------------
 
 
         private void btnAnslut_Click(object sender, EventArgs e)
@@ -153,28 +169,29 @@ namespace kahoot
                 lyssnaKlient(klienten);
             }
         }
-
         private async void lyssnaKlient(TcpClient c)
         {
+            //Debug.WriteLine(client.Connected.ToString());
             Debug.WriteLine(c.Connected.ToString() + " Read");
-            if(ansluten == true)
+
+            if (ansluten == true)
             {
                 byte[] buffer = new byte[1028];
-                int l = 0;
+                int n = 0;
                 try
                 {
-                    if(ansluten == true)
+                    if (ansluten == true)
                     {
-                        l = await c.GetStream().ReadAsync(buffer, 0, buffer.Length);
+                        n = await c.GetStream().ReadAsync(buffer, 0, buffer.Length);
                     }
                 }
-                catch(Exception error) { lbxLista.Items.Add(error.Message); }
+                catch (Exception error) { MessageBox.Show("read" + error.Message, Text); }
 
-                string msg = Encoding.Unicode.GetString(buffer, 0, l);
+                string msg = Encoding.Unicode.GetString(buffer, 0, n);
                 Debug.WriteLine(msg);
-                if(msg != "/CLOSE CONNECTION")
+                if (msg != "/CLOSE CONNECTION")
                 {
-                    if(ansluten == true)
+                    if (ansluten == true)
                     {
                         lbxInput.Items.Add(msg);
                     }
@@ -182,44 +199,60 @@ namespace kahoot
                 }
                 else
                 {
+                    
+                    
                     klienten.Close();
                     ansluten = false;
                     klienten = new TcpClient();
-                    if(ansluten == true)
+                    if (ansluten == true)
                     {
-                        lbxLista.Items.Add("Error");
+                        lbxInput.Items.Add("Lost connection to server" + "\r\n");
                     }
                     btnAnslut.Enabled = true;
                     btnSend.Enabled = false;
                 }
             }
+        }
+        private async void startaSändning(string msg)
+        {
+            Debug.WriteLine(klienten.Connected.ToString() + " stream");
+
+            if (klienten.Connected)
+            {
+                byte[] utData = Encoding.Unicode.GetBytes(msg);
+                try
+                {
+                    await klienten.GetStream().WriteAsync(utData, 0, utData.Length);
+                }
+                catch (Exception error) { lbxLista.Items.Add("stream" + error.Message); }
+                if (msg == "/CLOSE CONNECTION")
+                {
+                    utData = Encoding.Unicode.GetBytes("/CLOSE CONNECTION");
+                    try
+                    {
+                        await klienten.GetStream().WriteAsync(utData, 0, utData.Length);
+                    }
+                    catch(Exception error) { lbxLista.Items.Add("stream" + error.Message);}
+                    Debug.WriteLine("closing");
+                    ansluten = false;
+                    klienten.Close();
+                    klienten = new TcpClient();
+                    btnAnslut.Enabled = true;
+                    btnSend.Enabled = false;
+                }
+            }
+
 
         }
-
-
-
         private void btnSend_Click(object sender, EventArgs e)
         {
-            StartaSändning(tbxSend.Text);
+            startaSändning(tbxSend.Text);
         }
         /// <summary>
         /// Skickar data till servern.
         /// </summary>
-        public async void StartaSändning(string message)
-        {
-            byte[] utdata = Encoding.Unicode.GetBytes(message);
-            try
-            {
-                await klienten.GetStream().WriteAsync(utdata, 0, utdata.Length);
-            }
-            catch (Exception error) { lbxLista.Items.Add(error.Message); return; }
-            lbxLista.Items.Add("Sändning klar");
-        }
+ 
 
-        private void Form1_FormClosing_1(object sender, FormClosingEventArgs e)
-        {
-            ansluten = false;
-            StartaSändning("/CLOSE CONNECTION");
-        }
+        
     }
 }

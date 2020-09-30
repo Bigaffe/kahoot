@@ -42,7 +42,7 @@
             // btnStart
             // 
             this.btnStart.Location = new System.Drawing.Point(179, 11);
-            this.btnStart.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnStart.Margin = new System.Windows.Forms.Padding(4);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(100, 28);
             this.btnStart.TabIndex = 0;
@@ -53,7 +53,7 @@
             // btnAnslut
             // 
             this.btnAnslut.Location = new System.Drawing.Point(179, 50);
-            this.btnAnslut.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnAnslut.Margin = new System.Windows.Forms.Padding(4);
             this.btnAnslut.Name = "btnAnslut";
             this.btnAnslut.Size = new System.Drawing.Size(100, 28);
             this.btnAnslut.TabIndex = 1;
@@ -64,7 +64,7 @@
             // tbxStart
             // 
             this.tbxStart.Location = new System.Drawing.Point(285, 18);
-            this.tbxStart.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tbxStart.Margin = new System.Windows.Forms.Padding(4);
             this.tbxStart.Name = "tbxStart";
             this.tbxStart.Size = new System.Drawing.Size(132, 22);
             this.tbxStart.TabIndex = 2;
@@ -72,7 +72,7 @@
             // tbxAnslut
             // 
             this.tbxAnslut.Location = new System.Drawing.Point(285, 58);
-            this.tbxAnslut.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tbxAnslut.Margin = new System.Windows.Forms.Padding(4);
             this.tbxAnslut.Name = "tbxAnslut";
             this.tbxAnslut.Size = new System.Drawing.Size(132, 22);
             this.tbxAnslut.TabIndex = 3;
@@ -130,10 +130,10 @@
             this.Controls.Add(this.tbxStart);
             this.Controls.Add(this.btnAnslut);
             this.Controls.Add(this.btnStart);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Text = "Form1";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing_1);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 
