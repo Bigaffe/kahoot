@@ -37,6 +37,7 @@
             this.lbxLista = new System.Windows.Forms.ListBox();
             this.lbxInput = new System.Windows.Forms.ListBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.btndisconnect = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnStart
@@ -117,11 +118,22 @@
             this.lbxInput.Size = new System.Drawing.Size(1028, 484);
             this.lbxInput.TabIndex = 7;
             // 
+            // btndisconnect
+            // 
+            this.btndisconnect.Location = new System.Drawing.Point(179, 125);
+            this.btndisconnect.Name = "btndisconnect";
+            this.btndisconnect.Size = new System.Drawing.Size(132, 35);
+            this.btndisconnect.TabIndex = 8;
+            this.btndisconnect.Text = "Disconnect";
+            this.btndisconnect.UseVisualStyleBackColor = true;
+            this.btndisconnect.Click += new System.EventHandler(this.btndisconnect_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1507, 554);
+            this.Controls.Add(this.btndisconnect);
             this.Controls.Add(this.lbxInput);
             this.Controls.Add(this.lbxLista);
             this.Controls.Add(this.tbxSend);
@@ -150,6 +162,7 @@
         private System.Windows.Forms.ListBox lbxLista;
         private System.Windows.Forms.ListBox lbxInput;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.Button btndisconnect;
     }
 }
 

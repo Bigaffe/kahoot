@@ -31,22 +31,22 @@ namespace kahoot
         bool stänger = false;
         bool ansluten = false;
 
-      
+
         public Form1()
         {
             InitializeComponent();
             //klienten.NoDelay = true;
         }
-        
+
         private void btnStart_Click(object sender, EventArgs e)
         {
             try
             {
-                
+
                 lyssanre = new TcpListener(IPAddress.Any, port);
                 lyssanre.Start();
             }
-            catch(Exception error) { lbxLista.Items.Add(error.Message + "Hejsan numme 1" );return; }
+            catch (Exception error) { lbxLista.Items.Add(error.Message + "Hejsan numme 1"); return; }
             lbxLista.Items.Add("Knapp klar");
             btnStart.Enabled = false;
             StartaMottagning();
@@ -69,15 +69,15 @@ namespace kahoot
 
             }
             catch (Exception error) { lbxLista.Items.Add(error.Message + "Hejsan numme 2"); return; }
-            
-            
+
+
         }
         /// <summary>
         /// Läser in datan som klienter skickar in
         /// </summary>
         public async void StartaLäsning(TcpClient k)
         {
-            if(stänger == false)
+            if (stänger == false)
             {
                 byte[] buffer = new byte[1028];
                 int l = 0;
@@ -85,12 +85,12 @@ namespace kahoot
                 {
                     l = await k.GetStream().ReadAsync(buffer, 0, buffer.Length);
                 }
-                catch(Exception error) { lbxLista.Items.Add(error.Message); }
+                catch (Exception error) { lbxLista.Items.Add(error.Message); }
                 string msg = Encoding.Unicode.GetString(buffer, 0, l);
-                if (msg != "/CLOST CONNECTION")
+                if (msg != "/CLOSE CONNECTION")
                 {
                     Debug.WriteLine(((IPEndPoint)k.Client.RemoteEndPoint).Address + ":" + ((IPEndPoint)k.Client.RemoteEndPoint).Port + "> \"" + msg + "\"" + "\r\n");
-                    if(stänger == false)
+                    if (stänger == false)
                     {
                         lbxLista.Items.Add(((IPEndPoint)k.Client.RemoteEndPoint).Address + ":" + ((IPEndPoint)k.Client.RemoteEndPoint).Port + "> \"" + msg + "\"" + "\r\n");
                     }
@@ -100,7 +100,7 @@ namespace kahoot
             }
             else
             {
-                if(stänger == false)
+                if (stänger == false)
                 {
                     lbxLista.Items.Add(((IPEndPoint)k.Client.RemoteEndPoint).Address);
                 }
@@ -110,7 +110,7 @@ namespace kahoot
         }
         private async void broadcast(string msg)
         {
-            foreach(TcpClient client in klienter)
+            foreach (TcpClient client in klienter)
             {
                 startTest(client, msg);
             }
@@ -122,24 +122,40 @@ namespace kahoot
             try
             {
                 await c.GetStream().WriteAsync(utData, 0, utData.Length);
+
             }
-            catch (Exception error) { MessageBox.Show("stream" + error.Message, Text); }
+            catch (Exception error) { lbxInput.Items.Add("stream" + error.Message); }
         }
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
+
+
+        private void disconnect(){
             if(ansluten == true)
             {
                 ansluten = false;
                 startaSändning("/CLOSE CONNECTION");
                 klienten.Close();
             }
-            else 
+            else
             {
+
                 stänger = true;
                 broadcast("/CLOSE CONNECTION");
-                Application.Exit();
+                lyssanre.Stop();
             }
-            
+
+
+        }
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DialogResult result = MessageBox.Show("EXIT?!?!??!", "Exit Program", MessageBoxButtons.YesNo);
+            if (result == DialogResult.No)
+            {
+                e.Cancel = true;
+            }
+            else if (result == DialogResult.Yes)
+            {
+                disconnect();
+            }
         }
         //---------------------------------------------------------------
 
@@ -248,11 +264,17 @@ namespace kahoot
         {
             startaSändning(tbxSend.Text);
         }
+
+        private void btndisconnect_Click(object sender, EventArgs e)
+        {
+            disconnect();
+        }
+
         /// <summary>
         /// Skickar data till servern.
         /// </summary>
- 
 
-        
+
+
     }
 }
