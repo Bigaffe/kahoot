@@ -140,7 +140,7 @@ namespace kahoot
 
                 stänger = true;
                 broadcast("/CLOSE CONNECTION");
-                lyssanre.Stop();
+                lyssanre.Server.Close();
             }
 
 
@@ -201,7 +201,7 @@ namespace kahoot
                         n = await c.GetStream().ReadAsync(buffer, 0, buffer.Length);
                     }
                 }
-                catch (Exception error) { MessageBox.Show("read" + error.Message, Text); }
+                catch (Exception error) { lbxInput.Items.Add("read" + error.Message); }
 
                 string msg = Encoding.Unicode.GetString(buffer, 0, n);
                 Debug.WriteLine(msg);
